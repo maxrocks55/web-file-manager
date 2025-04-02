@@ -1,0 +1,4 @@
+{
+  "_instructions": "replace assetname with the name you'll use to try and find the path, and replace 'www://website.TLD/current/path/to/asset/assetname.assetextension' with the actual website and path, and, replace 'assetname.assetextension' with the file and extension",
+  "assetname": "www://website.TLD/current/path/to/asset/assetname.assetextension"
+}
