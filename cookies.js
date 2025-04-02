@@ -36,6 +36,35 @@ function eraseCookie(name) {
 /* Usage
 eraseCookie("username"); */
 
+// Existing functions remain unchanged (setCookie, getCookie, eraseCookie)
+
 function getasset(assetname) {
-    SetCookie("tograb", assetname, 90223)
+    // Set the "tograb" cookie with the asset name
+    setCookie("tograb", assetname, 90223);
+
+    // Capture the current URL and format it as website/path
+    const url = `${window.location.hostname}${window.location.pathname}`;
+    console.log(`!yourwebsitegoeshere/[path_to_the_RHTML_folder]/index.html: ${url}`);
+
+    // Read the "assetpath" cookie
+    const assetPath = getCookie("assetpath");
+    if (assetPath) {
+        // Fetch data from the asset path
+        fetch(assetPath)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.statusText);
+                }
+                return response.text(); // or response.json() if the response is JSON
+            })
+            .then(data => {
+                console.log('Data from assetpath:', data);
+                // Process the data as needed
+            })
+            .catch(error => {
+                console.error('There has been a problem with your fetch operation:', error);
+            });
+    } else {
+        console.error('Asset path cookie not found');
+    }
 }
