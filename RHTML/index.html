@@ -3,8 +3,66 @@
     <head>
         <title> Fetch request </title>
         <meta name="robots" content="noindex">
-        <script src="https://example.com/script.js" defer></script>
-        <!--replace the https://example.com/script.js with (http(s)://[folder where you placed cookies.js]/cookies.js(my cookies.js)-->
+        <script src="http://yourwebsite.com/path_to_cookies_js/cookies.js" defer></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                function getCookie(name) {
+                    const nameEQ = encodeURIComponent(name) + "=";
+                    const ca = document.cookie.split(';');
+                    for(let i = 0; i < ca.length; i++) {
+                        let c = ca[i];
+                        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                        if (c.indexOf(nameEQ) === 0) return decodeURIComponent(c.substring(nameEQ.length, c.length));
+                    }
+                    return null;
+                }
+
+                function fetchAssetList() {
+                    return fetch('assetslist.json')
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok: ' + response.statusText);
+                            }
+                            return response.json();
+                        });
+                }
+
+                function fetchAsset(assetPath) {
+                    fetch(assetPath)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok: ' + response.statusText);
+                            }
+                            return response.text(); // or response.json() if the response is JSON
+                        })
+                        .then(data => {
+                            console.log('Data from asset:', data);
+                            // Process the data as needed
+                        })
+                        .catch(error => {
+                            console.error('There has been a problem with your fetch operation:', error);
+                        });
+                }
+
+                const assetName = getCookie('assetname');
+                if (assetName) {
+                    fetchAssetList()
+                        .then(assetList => {
+                            const assetPath = assetList[assetName];
+                            if (assetPath) {
+                                fetchAsset(assetPath);
+                            } else {
+                                console.error('Asset not found in the list');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Failed to fetch the asset list:', error);
+                        });
+                } else {
+                    console.error('Asset name cookie not found');
+                }
+            });
+        </script>
     </head>
     <body>
         <!--when using this, the "<meta name="robots" content="noindex">" is to prevent google from indexing it-->
